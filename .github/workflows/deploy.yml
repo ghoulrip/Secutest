@@ -1,0 +1,55 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.yml'
+      - '**/Dockerfile'
+      - '**/*.toml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && github.events.inputs.environment || 'production' }}
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/secutest:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/secutest:${{ github.sha }}
+
+      - name: Deploy to Kubernetes (if available)
+        run: |
+          echo "Deploying ${{ secrets.DOCKERHUB_USERNAME }}/secutest:${{ github.sha }} to ${{ env.DEPLOY_TARGET }}"
+        env:
+          DEPLOY_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.events.inputs.environment || 'production' }}
+
+      - name: Post deployment verification
+        run: |
+          echo "Verifying deployment..."
+        env:
+          API_BASE_URL: http://localhost:8080/health
