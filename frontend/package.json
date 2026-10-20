@@ -25,5 +25,10 @@
     "@types/react-dom": "^19.3.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
-  }
+  },
+  "description": "Web UI for the Secutest website leak-detection app. Built with **React 19**, **TypeScript**, and **Vite**.",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

@@ -1,0 +1,52 @@
+[package]
+name = "secutest-backend"
+version = "0.1.0"
+edition = "2021"
+description = "Scan orchestration, result storage, and API services for the Secutest leak-detection platform"
+license = "MIT"
+
+[dependencies]
+# Async runtime
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "signal", "net"] }
+
+# Web framework
+actix-web = "4"
+actix-cors = "0.7"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Identifiers and timestamps
+uuid = { version = "0.8", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+# URL handling and IP classification for target validation
+url = "2"
+
+# HTTP client used by the default scanner
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "charset"] }
+
+# Async traits and stream helpers
+async-trait = "0.1"
+futures-util = "0.3"
+
+# Error handling
+thiserror = "2"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[dev-dependencies]
+actix-rt = "2"
+actix-web = "4"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "net", "signal"] }
+uuid = { version = "0.8", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "charset"] }
+mockito = "1.7.2"
+
+# Pin getrandom to 0.2 for Windows MSVC compatibility (avoid dlltool)
+getrandom = { version = "0.2", features = ["rdrand"] }

@@ -13,15 +13,20 @@ export default defineConfig({
   coverage: {
     provider: 'v8',
     reporter: ['text', 'json', 'html'],
-    include: [
-      'src/api/client.test.ts',
-      'src/pages/ScanPage.test.ts',
-    ],
+    reportsDirectory: './coverage',
+    include: ['src/**/*.{ts,tsx}'],
     exclude: [
       'src/**/*.test.{ts,tsx}',
       'src/**/*.spec.{ts,tsx}',
       'src/setupTests.ts',
-      'src/main.ts',
+      'src/main.tsx',
+      'src/**/*.d.ts',
     ],
+    thresholds: {
+      statements: 70,
+      branches: 60,
+      functions: 70,
+      lines: 70,
+    },
   },
 })

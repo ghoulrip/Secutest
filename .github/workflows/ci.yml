@@ -98,7 +98,12 @@ jobs:
             backend/target
             ~/.cargo/registry
           key: ${{ runner.os }}-cargo-${{ hashFiles('backend/Cargo.lock') }}
-      - run: cargo test
+      - name: Run tests
+        run: cargo test --manifest-path backend/Cargo.toml
+      - name: Check formatting
+        run: cargo fmt --manifest-path backend/Cargo.toml -- --check
+      - name: Lint with clippy
+        run: cargo clippy --manifest-path backend/Cargo.toml -- -D warnings
         working-directory: backend
 
   backend-security:

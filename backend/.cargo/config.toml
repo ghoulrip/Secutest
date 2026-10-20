@@ -1,0 +1,6 @@
+# Toolchain configuration for Windows
+# Prefer MSVC for local builds where available
+# CI runs on Linux, so this file won't affect automated tests
+
+[target.x86_64-pc-windows-msvc]
+linker = "link.exe"
