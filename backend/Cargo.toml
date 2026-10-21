@@ -10,8 +10,9 @@ license = "MIT"
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "signal", "net"] }
 
 # Web framework - Fixed RUSTSEC-2026-0258 via h2 upgrade, RUSTSEC-2024-0436 via actix-web upgrade
-actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-tls"] }
-actix-cors = { version = "0.7", features = ["rustls-tls"] }
+# Using rustls-0_23 feature to pull secure rustls >=0.23.46 (fixes RUSTSEC-2024-0336, RUSTSEC-2026-0349)
+actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-0_23"] }
+actix-cors = "0.7"
 
 # Serialization
 serde = { version = "1", features = ["derive"] }
@@ -43,7 +44,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
 actix-rt = "2"
-actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-tls"] }
+actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-0_23"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "net", "signal"] }
 uuid = { version = "0.8", features = ["v4", "serde"] }
 chrono = { version = "0.4.38", features = ["serde"] }
@@ -53,3 +54,11 @@ mockito = "1.7.2"
 
 # Pin getrandom to 0.2 for Windows MSVC compatibility (avoid dlltool)
 getrandom = { version = "0.2", features = ["rdrand"] }
+
+# Security: pin secure versions of transitive dependencies
+# RUSTSEC-2025-0009: ring AES panic - upgrade to >=0.17.12
+ring = "0.17.14"
+# RUSTSEC-2024-0336, RUSTSEC-2026-0349: rustls vulnerabilities - upgrade to >=0.23.46
+rustls = "0.23.46"
+# RUSTSEC-2026-0381: webpki-roots emSign distrust - upgrade to >=1.0.10
+webpki-roots = "1.0.10"
