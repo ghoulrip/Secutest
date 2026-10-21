@@ -23,8 +23,12 @@ pub(crate) fn analyze_response_body(body: &str, target: &str) -> Vec<Vulnerabili
         });
     }
 
-    if body_lower.contains("sql")
-        && (body_lower.contains("select") || body_lower.contains("insert"))
+    if body_lower.contains("select")
+        || body_lower.contains("insert")
+        || body_lower.contains("update")
+        || body_lower.contains("delete")
+        || body_lower.contains("drop")
+        || body_lower.contains("alter")
     {
         vulnerabilities.push(Vulnerability {
             id: Uuid::new_v4().to_string(),

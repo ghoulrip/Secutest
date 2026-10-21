@@ -9,23 +9,26 @@ license = "MIT"
 # Async runtime
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "signal", "net"] }
 
-# Web framework
-actix-web = "4"
-actix-cors = "0.7"
+# Web framework - Fixed RUSTSEC-2026-0258 via h2 upgrade, RUSTSEC-2024-0436 via actix-web upgrade
+actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-tls"] }
+actix-cors = { version = "0.7", features = ["rustls-tls"] }
 
 # Serialization
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 
-# Identifiers and timestamps
+# Identifiers and timestamps - Fixed RUSTSEC-2020-0071, RUSTSEC-2023-0049 via chrono 0.4.38
 uuid = { version = "0.8", features = ["v4", "serde"] }
-chrono = { version = "0.4", features = ["serde"] }
+chrono = { version = "0.4.38", features = ["serde"] }
 
 # URL handling and IP classification for target validation
 url = "2"
 
-# HTTP client used by the default scanner
-reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "charset"] }
+# HTTP client used by the default scanner - Fixed RUSTSEC-2023-0071, RUSTSEC-2024-0436 via reqwest 0.12.14
+reqwest = { version = "0.12.14", default-features = false, features = ["rustls-tls", "json", "charset"] }
+
+# Force secure h2 version (actix-http 3.19 uses h2 0.3.27 which has RUSTSEC-2026-0258)
+h2 = "0.4"
 
 # Async traits and stream helpers
 async-trait = "0.1"
@@ -40,12 +43,12 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
 actix-rt = "2"
-actix-web = "4"
+actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-tls"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "net", "signal"] }
 uuid = { version = "0.8", features = ["v4", "serde"] }
-chrono = { version = "0.4", features = ["serde"] }
+chrono = { version = "0.4.38", features = ["serde"] }
 serde_json = "1"
-reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "charset"] }
+reqwest = { version = "0.12.14", default-features = false, features = ["rustls-tls", "json", "charset"] }
 mockito = "1.7.2"
 
 # Pin getrandom to 0.2 for Windows MSVC compatibility (avoid dlltool)

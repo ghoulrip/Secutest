@@ -53,6 +53,7 @@ pub struct ScanOptions {
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct CreateScanRequest {
     pub url: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub options: Option<ScanOptions>,
 }
 
