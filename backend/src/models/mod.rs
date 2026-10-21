@@ -1,8 +1,8 @@
-/// Data models for the Secutest backend
+// Models for Secutest backend
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct ScanJob {
     pub id: String,
     pub target: String,
@@ -13,16 +13,7 @@ pub struct ScanJob {
     pub result: Option<ScanResult>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
-#[serde(rename_all = "lowercase")]
-pub enum ScanStatus {
-    Queued,
-    Running,
-    Completed,
-    Failed,
-}
-
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct ScanResult {
     pub url: String,
     pub ip_address: Option<String>,
@@ -32,7 +23,7 @@ pub struct ScanResult {
     pub scanned_at: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct Vulnerability {
     pub id: String,
     pub severity: SeverityLevel,
@@ -43,36 +34,41 @@ pub struct Vulnerability {
     pub recommendation: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone, PartialEq)]
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub enum SeverityLevel {
-    Low,
-    Medium,
-    High,
     Critical,
+    High,
+    Medium,
+    Low,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-pub struct CreateScanRequest {
-    pub url: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub options: Option<ScanOptions>,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct ScanOptions {
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub include_subdomains: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub follow_redirects: Option<bool>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_depth: Option<u32>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub struct CreateScanRequest {
+    pub url: String,
+    pub options: Option<ScanOptions>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct JobUpdate {
     pub job_id: String,
     pub progress: Option<f32>,
     pub status: Option<ScanStatus>,
     pub result: Option<ScanResult>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum ScanStatus {
+    Queued,
+    Running,
+    Completed,
+    Failed,
 }

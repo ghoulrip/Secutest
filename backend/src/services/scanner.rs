@@ -1,6 +1,5 @@
 /// Scanner service for running HTTP scans against targets
-
-use crate::models::{ScanResult, SeverityLevel, Vulnerability};
+pub use crate::models::{ScanResult, SeverityLevel, Vulnerability};
 use reqwest::Client;
 use uuid::Uuid;
 
@@ -24,15 +23,21 @@ pub(crate) fn analyze_response_body(body: &str, target: &str) -> Vec<Vulnerabili
         });
     }
 
-    if body_lower.contains("sql") && (body_lower.contains("select") || body_lower.contains("insert")) {
+    if body_lower.contains("sql")
+        && (body_lower.contains("select") || body_lower.contains("insert"))
+    {
         vulnerabilities.push(Vulnerability {
             id: Uuid::new_v4().to_string(),
             severity: SeverityLevel::High,
             title: "Potential SQL Injection".to_string(),
-            description: "Response contains SQL-like patterns that may indicate injection vulnerabilities".to_string(),
+            description:
+                "Response contains SQL-like patterns that may indicate injection vulnerabilities"
+                    .to_string(),
             cve: None,
             affected_url: target.to_string(),
-            recommendation: "Use parameterized queries and prepared statements for all database access".to_string(),
+            recommendation:
+                "Use parameterized queries and prepared statements for all database access"
+                    .to_string(),
         });
     }
 

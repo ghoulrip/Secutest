@@ -1,13 +1,16 @@
+mod handlers;
 mod models;
 mod services;
-mod handlers;
 
 #[cfg(test)]
 mod tests;
 
-use handlers::scan_handlers::{AppState, health_check, create_scan, list_scans, get_scan_status, get_scan_results, update_scan_progress, scan_worker};
-use actix_web::{App, HttpServer, web};
 use actix_cors::Cors;
+use actix_web::{web, App, HttpServer};
+use handlers::scan_handlers::{
+    create_scan, get_scan_results, get_scan_status, health_check, list_scans, scan_worker,
+    update_scan_progress, AppState,
+};
 use std::sync::{Arc, Mutex};
 use tracing::info;
 use tracing_subscriber::EnvFilter;
@@ -18,7 +21,7 @@ async fn main() -> std::io::Result<()> {
     tracing_subscriber::fmt()
         .with_env_filter(
             EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| EnvFilter::new("secutest_backend=info"))
+                .unwrap_or_else(|_| EnvFilter::new("secutest_backend=info")),
         )
         .init();
 

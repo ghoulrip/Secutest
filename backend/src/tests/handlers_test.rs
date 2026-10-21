@@ -1,15 +1,30 @@
 #[cfg(test)]
 mod tests {
-    use crate::handlers::scan_handlers::{AppState, health_check, create_scan, list_scans, get_scan_status, get_scan_results, update_scan_progress};
-    use crate::models::{CreateScanRequest, ScanOptions, JobUpdate, ScanStatus, ScanResult, Vulnerability, SeverityLevel};
-    use actix_web::{test, App, web};
+    use crate::handlers::scan_handlers::{
+        create_scan, get_scan_results, get_scan_status, health_check, list_scans,
+        update_scan_progress, AppState,
+    };
+    use crate::models::{
+        CreateScanRequest, JobUpdate, ScanOptions, ScanResult, ScanStatus, SeverityLevel,
+        Vulnerability,
+    };
     use actix_web::http::StatusCode;
-    use std::sync::{Arc, Mutex};
-    use uuid::Uuid;
+    use actix_web::{test, web, App};
     use chrono::Utc;
     use serde_json::json;
+    use std::sync::{Arc, Mutex};
+    use uuid::Uuid;
 
-    async fn setup_app() -> (AppState, impl actix_web::dev::ServiceFactory<actix_web::dev::ServiceRequest, Config = (), Response = actix_web::dev::ServiceResponse, Error = actix_web::Error, InitError = ()>) {
+    async fn setup_app() -> (
+        AppState,
+        impl actix_web::dev::ServiceFactory<
+            actix_web::dev::ServiceRequest,
+            Config = (),
+            Response = actix_web::dev::ServiceResponse,
+            Error = actix_web::Error,
+            InitError = (),
+        >,
+    ) {
         let state = AppState {
             jobs: Arc::new(Mutex::new(Vec::new())),
         };
@@ -21,8 +36,9 @@ mod tests {
                 .service(list_scans)
                 .service(get_scan_status)
                 .service(get_scan_results)
-                .service(update_scan_progress)
-        ).await;
+                .service(update_scan_progress),
+        )
+        .await;
         (state, app)
     }
 
@@ -138,7 +154,9 @@ mod tests {
         let scan_id = body["scanId"].as_str().unwrap().to_string();
 
         // Get scan status
-        let req = test::TestRequest::get().uri(&format!("/api/scans/{}", scan_id)).to_request();
+        let req = test::TestRequest::get()
+            .uri(&format!("/api/scans/{}", scan_id))
+            .to_request();
         let resp = test::call_service(&app, req).await;
 
         assert_eq!(resp.status(), StatusCode::OK);
@@ -153,7 +171,9 @@ mod tests {
     #[actix_web::test]
     async fn test_get_scan_status_not_found() {
         let (_, app) = setup_app().await;
-        let req = test::TestRequest::get().uri("/api/scans/nonexistent-id").to_request();
+        let req = test::TestRequest::get()
+            .uri("/api/scans/nonexistent-id")
+            .to_request();
         let resp = test::call_service(&app, req).await;
 
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -180,7 +200,9 @@ mod tests {
         let scan_id = body["scanId"].as_str().unwrap().to_string();
 
         // Try to get results before scan completes
-        let req = test::TestRequest::get().uri(&format!("/api/scans/{}/results", scan_id)).to_request();
+        let req = test::TestRequest::get()
+            .uri(&format!("/api/scans/{}/results", scan_id))
+            .to_request();
         let resp = test::call_service(&app, req).await;
 
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -192,7 +214,9 @@ mod tests {
     #[actix_web::test]
     async fn test_get_scan_results_not_found() {
         let (_, app) = setup_app().await;
-        let req = test::TestRequest::get().uri("/api/scans/nonexistent-id/results").to_request();
+        let req = test::TestRequest::get()
+            .uri("/api/scans/nonexistent-id/results")
+            .to_request();
         let resp = test::call_service(&app, req).await;
 
         assert_eq!(resp.status(), StatusCode::NOT_FOUND);
@@ -399,7 +423,9 @@ mod tests {
         assert_eq!(body["progress"], 75);
 
         // Verify second scan is still queued
-        let req = test::TestRequest::get().uri(&format!("/api/scans/{}", scan_id2)).to_request();
+        let req = test::TestRequest::get()
+            .uri(&format!("/api/scans/{}", scan_id2))
+            .to_request();
         let resp = test::call_service(&app, req).await;
         let body: serde_json::Value = test::read_body_json(resp).await;
         assert_eq!(body["scanId"], scan_id2);

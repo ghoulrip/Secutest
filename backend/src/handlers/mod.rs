@@ -1,21 +1,28 @@
 /// API handlers for the Secutest backend
 
 pub mod scan_handlers {
-    use actix_web::{get, post, put, web, HttpResponse, Responder};
     use crate::models::*;
     use crate::services::scanner::run_http_scan;
-    use std::sync::{Arc, Mutex};
-    use uuid::Uuid;
+    use actix_web::{get, post, put, web, HttpResponse, Responder};
     use chrono::Utc;
+    use std::sync::{Arc, Mutex};
     use tracing::info;
+    use uuid::Uuid;
 
     /// Convert internal ScanJob to frontend Scan format
     fn job_to_scan_response(job: &ScanJob) -> serde_json::Value {
         let mut findings = Vec::new();
         let (summary, status, error, completed_at) = match (&job.status, &job.result) {
             (ScanStatus::Failed, _) => {
-                let err = job.result.as_ref()
-                    .map(|r| format!("Scan failed: {} vulnerabilities found", r.vulnerabilities.len()))
+                let err = job
+                    .result
+                    .as_ref()
+                    .map(|r| {
+                        format!(
+                            "Scan failed: {} vulnerabilities found",
+                            r.vulnerabilities.len()
+                        )
+                    })
                     .unwrap_or_else(|| "Scan failed".to_string());
                 (None, "failed", Some(err), Some(job.updated_at.clone()))
             }
@@ -44,9 +51,15 @@ pub mod scan_handlers {
                     }));
                 }
                 let total = findings.len();
-                let critical = findings.iter().filter(|f| f["severity"] == "critical").count();
+                let critical = findings
+                    .iter()
+                    .filter(|f| f["severity"] == "critical")
+                    .count();
                 let high = findings.iter().filter(|f| f["severity"] == "high").count();
-                let medium = findings.iter().filter(|f| f["severity"] == "medium").count();
+                let medium = findings
+                    .iter()
+                    .filter(|f| f["severity"] == "medium")
+                    .count();
                 let low = findings.iter().filter(|f| f["severity"] == "low").count();
                 let info = 0;
 
@@ -59,7 +72,12 @@ pub mod scan_handlers {
                     "info": info,
                     "riskScore": result.risk_score,
                 });
-                (Some(summary), "completed", None, Some(job.updated_at.clone()))
+                (
+                    Some(summary),
+                    "completed",
+                    None,
+                    Some(job.updated_at.clone()),
+                )
             }
             (ScanStatus::Completed, None) => (None, "running", None, None),
             (ScanStatus::Running, _) => (None, "running", None, None),

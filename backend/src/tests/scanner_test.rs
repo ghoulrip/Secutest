@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use crate::services::scanner::{analyze_response_body, ScanResult};
     use crate::models::{SeverityLevel, Vulnerability};
+    use crate::services::scanner::{analyze_response_body, ScanResult};
 
     #[test]
     fn test_analyze_response_body_xss() {

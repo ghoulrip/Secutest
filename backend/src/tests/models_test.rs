@@ -1,6 +1,9 @@
 #[cfg(test)]
 mod tests {
-    use crate::models::{ScanJob, ScanStatus, ScanResult, Vulnerability, SeverityLevel, CreateScanRequest, ScanOptions, JobUpdate};
+    use crate::models::{
+        CreateScanRequest, JobUpdate, ScanJob, ScanOptions, ScanResult, ScanStatus, SeverityLevel,
+        Vulnerability,
+    };
     use chrono::Utc;
     use uuid::Uuid;
 
