@@ -1,0 +1,58 @@
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling getrandom v0.4.3
+   Compiling parking_lot_core v0.9.12
+   Compiling itoa v1.0.18
+   Compiling stable_deref_trait v1.2.1
+   Compiling tracing-core v0.1.36
+   Compiling serde_core v1.0.229
+error: linking with `link.exe` failed: exit code: 1
+  |
+  = note: "link.exe" "/NOLOGO" "C:\\dev\\Secutest\\backend\\target\\debug\\build\\getrandom-faab77a30411d148\\rustcOsbABf\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\dev\\Secutest\\backend\\target\\debug\\build\\getrandom-faab77a30411d148\\build_script_build-faab77a30411d148.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: link: extra operand 'C:\\dev\\Secutest\\backend\\target\\debug\\build\\getrandom-faab77a30411d148\\build_script_build-faab77a30411d148.build_script_build.d87c1751281607b6-cgu.0.rcgu.o'
+          Try 'link --help' for more information.
+          
+
+error: linking with `link.exe` failed: exit code: 1
+  |
+  = note: "link.exe" "/NOLOGO" "C:\\dev\\Secutest\\backend\\target\\debug\\build\\parking_lot_core-962d4b501702c5b6\\rustczbVCsR\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\dev\\Secutest\\backend\\target\\debug\\build\\parking_lot_core-962d4b501702c5b6\\build_script_build-962d4b501702c5b6.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: link: extra operand 'C:\\dev\\Secutest\\backend\\target\\debug\\build\\parking_lot_core-962d4b501702c5b6\\build_script_build-962d4b501702c5b6.build_script_build.40d2cd429fc84ddd-cgu.0.rcgu.o'
+          Try 'link --help' for more information.
+          
+
+error: linking with `link.exe` failed: exit code: 1
+  |
+  = note: "link.exe" "/NOLOGO" "C:\\dev\\Secutest\\backend\\target\\debug\\build\\quote-e167a30f3768d6a4\\rustcdwi5Jy\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\dev\\Secutest\\backend\\target\\debug\\build\\quote-e167a30f3768d6a4\\build_script_build-e167a30f3768d6a4.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: link: extra operand 'C:\\dev\\Secutest\\backend\\target\\debug\\build\\quote-e167a30f3768d6a4\\build_script_build-e167a30f3768d6a4.build_script_build.746f6790a64ad35-cgu.0.rcgu.o'
+          Try 'link --help' for more information.
+          
+
+error: linking with `link.exe` failed: exit code: 1
+  |
+  = note: "link.exe" "/NOLOGO" "C:\\dev\\Secutest\\backend\\target\\debug\\build\\proc-macro2-fe8e542c2133d252\\rustcQjArUa\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\dev\\Secutest\\backend\\target\\debug\\build\\proc-macro2-fe8e542c2133d252\\build_script_build-fe8e542c2133d252.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: link: extra operand 'C:\\dev\\Secutest\\backend\\target\\debug\\build\\proc-macro2-fe8e542c2133d252\\build_script_build-fe8e542c2133d252.build_script_build.d436a3de92a3a435-cgu.0.rcgu.o'
+          Try 'link --help' for more information.
+          
+
+note: `link.exe` returned an unexpected error
+
+note: you may need to install Visual Studio build tools with the "C++ build tools" workload
+
+error: could not compile `proc-macro2` (build script) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `getrandom` (build script) due to 1 previous error
+error: could not compile `parking_lot_core` (build script) due to 1 previous error
+error: could not compile `quote` (build script) due to 1 previous error
+error: linking with `link.exe` failed: exit code: 1
+  |
+  = note: "link.exe" "/NOLOGO" "C:\\dev\\Secutest\\backend\\target\\debug\\build\\serde_core-f40a17f0b285e972\\rustc1YU2V6\\symbols.o" "<2 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:C:\\dev\\Secutest\\backend\\target\\debug\\build\\serde_core-f40a17f0b285e972\\build_script_build-f40a17f0b285e972.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: link: extra operand 'C:\\dev\\Secutest\\backend\\target\\debug\\build\\serde_core-f40a17f0b285e972\\build_script_build-f40a17f0b285e972.build_script_build.d7389cc491d8ad4c-cgu.0.rcgu.o'
+          Try 'link --help' for more information.
+          
+
+error: could not compile `serde_core` (build script) due to 1 previous error

@@ -2,5 +2,7 @@
 # Prefer MSVC for local builds where available
 # CI runs on Linux, so this file won't affect automated tests
 
+# MSVC linker path from Visual Studio 2019 Build Tools
+# This ensures link.exe is found even when not on PATH
 [target.x86_64-pc-windows-msvc]
-linker = "link.exe"
+linker = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\BuildTools\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64\\link.exe"

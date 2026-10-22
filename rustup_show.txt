@@ -1,0 +1,18 @@
+Default host: x86_64-pc-windows-gnu
+rustup home:  C:\Users\ghoul\.rustup
+
+installed toolchains
+--------------------
+stable-x86_64-pc-windows-gnu (active, default)
+stable-x86_64-pc-windows-msvc
+1.89.0-x86_64-pc-windows-gnu
+1.90.0-x86_64-pc-windows-gnu
+1.98.0-x86_64-pc-windows-gnu
+
+active toolchain
+----------------
+name: stable-x86_64-pc-windows-gnu
+active because: it's the default toolchain
+installed targets:
+  x86_64-pc-windows-gnu
+  x86_64-pc-windows-msvc

@@ -51,6 +51,14 @@ pub struct ScanOptions {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+pub struct SubdomainResult {
+    pub subdomain: String,
+    pub ip_address: Option<String>,
+    pub reachable: bool,
+    pub scan_result: Option<ScanResult>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
 pub struct CreateScanRequest {
     pub url: String,
     #[serde(skip_serializing_if = "Option::is_none")]
