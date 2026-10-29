@@ -1,20 +1,50 @@
+use crate::models::SubdomainResult;
 /// Scanner service for running HTTP scans against targets
 pub use crate::models::{ScanResult, SeverityLevel, Vulnerability};
-use crate::models::SubdomainResult;
 use reqwest::Client;
 use std::net::ToSocketAddrs;
 use uuid::Uuid;
 
 const SCAN_TIMEOUT_SECS: u64 = 30;
 const CONNECT_TIMEOUT_SECS: u64 = 10;
+#[allow(dead_code)]
 const SUBDOMAIN_TIMEOUT_SECS: u64 = 10;
 
 // Common subdomain prefixes to check
+#[allow(dead_code)]
 pub(crate) const COMMON_SUBDOMAINS: &[&str] = &[
-    "www", "mail", "ftp", "admin", "api", "dev", "test", "staging", "prod",
-    "app", "blog", "shop", "store", "portal", "dashboard", "secure", "vpn",
-    "remote", "webmail", "cpanel", "whm", "phpmyadmin", "mysql", "db",
-    "git", "svn", "ci", "jenkins", "jira", "confluence", "wiki", "docs",
+    "www",
+    "mail",
+    "ftp",
+    "admin",
+    "api",
+    "dev",
+    "test",
+    "staging",
+    "prod",
+    "app",
+    "blog",
+    "shop",
+    "store",
+    "portal",
+    "dashboard",
+    "secure",
+    "vpn",
+    "remote",
+    "webmail",
+    "cpanel",
+    "whm",
+    "phpmyadmin",
+    "mysql",
+    "db",
+    "git",
+    "svn",
+    "ci",
+    "jenkins",
+    "jira",
+    "confluence",
+    "wiki",
+    "docs",
 ];
 
 /// Extract body analysis logic to make it unit testable
@@ -97,16 +127,14 @@ pub async fn run_http_scan(target: &str) -> ScanResult {
     }
 
     // Build the scan result
-    let result = ScanResult {
+    ScanResult {
         url: target.to_string(),
         ip_address: None,
         open_ports: Vec::new(),
         vulnerabilities: vulnerabilities.clone(),
         risk_score: if vulnerabilities.is_empty() { 1.0 } else { 7.5 },
         scanned_at: chrono::Utc::now().to_rfc3339(),
-    };
-
-    result
+    }
 }
 
 fn build_client() -> Client {
@@ -119,6 +147,7 @@ fn build_client() -> Client {
 }
 
 /// Build a client with shorter timeout for subdomain checks
+#[allow(dead_code)]
 fn build_subdomain_client() -> Client {
     Client::builder()
         .user_agent("Secutest/0.1.0 (subdomain check)")
@@ -129,32 +158,39 @@ fn build_subdomain_client() -> Client {
 }
 
 /// Extract host from URL
+#[allow(dead_code)]
 pub(crate) fn extract_host(url: &str) -> Option<String> {
-    url::Url::parse(url).ok().and_then(|u| u.host_str().map(|h| h.to_string()))
+    let url = if !url.contains("://") {
+        format!("http://{}", url)
+    } else {
+        url.to_string()
+    };
+    url::Url::parse(&url)
+        .ok()
+        .and_then(|u| u.host_str().map(|h| h.to_string()))
 }
 
 /// Check if a subdomain is reachable via DNS resolution
-async fn check_subdomain_reachable(subdomain: &str) -> (bool, Option<String>) {
+#[allow(dead_code)]
+async fn check_subdomain_reachable(subdomain: &str) -> Option<(bool, Option<String>)> {
     // Try to resolve the hostname
-    match tokio::task::spawn_blocking({
+    tokio::task::spawn_blocking({
         let subdomain = subdomain.to_string();
         move || {
             format!("{}:80", subdomain)
                 .to_socket_addrs()
                 .ok()
                 .and_then(|mut addrs| addrs.next())
-                .map(|addr| (true, addr.ip().to_string()))
+                .map(|addr| (true, Some(addr.ip().to_string())))
                 .unwrap_or((false, None))
         }
     })
     .await
-    {
-        Ok(result) => result,
-        Err(_) => (false, None),
-    }
+    .ok()
 }
 
 /// Scan a single subdomain with HTTP request
+#[allow(dead_code)]
 async fn scan_subdomain(target: &str, subdomain: &str) -> SubdomainResult {
     let subdomain_url = if target.starts_with("https://") {
         target.replacen("https://", &format!("https://{}.", subdomain), 1)
@@ -164,7 +200,9 @@ async fn scan_subdomain(target: &str, subdomain: &str) -> SubdomainResult {
         format!("https://{}.{}", subdomain, target)
     };
 
-    let (reachable, ip_address) = check_subdomain_reachable(&subdomain_url).await;
+    let (reachable, ip_address) = check_subdomain_reachable(&subdomain_url)
+        .await
+        .unwrap_or((false, None));
 
     let scan_result = if reachable {
         Some(run_http_scan(&subdomain_url).await)
@@ -181,6 +219,7 @@ async fn scan_subdomain(target: &str, subdomain: &str) -> SubdomainResult {
 }
 
 /// Enumerate and scan subdomains for a target
+#[allow(dead_code)]
 pub async fn scan_subdomains(target: &str, max_subdomains: usize) -> Vec<SubdomainResult> {
     let host = extract_host(target).unwrap_or_else(|| target.to_string());
     let client = build_subdomain_client();
@@ -248,7 +287,12 @@ pub async fn scan_subdomains(target: &str, max_subdomains: usize) -> Vec<Subdoma
 }
 
 /// Run an HTTP scan against a target URL with optional subdomain scanning
-pub async fn run_scan_with_options(target: &str, include_subdomains: bool, max_subdomains: usize) -> (ScanResult, Vec<SubdomainResult>) {
+#[allow(dead_code)]
+pub async fn run_scan_with_options(
+    target: &str,
+    include_subdomains: bool,
+    max_subdomains: usize,
+) -> (ScanResult, Vec<SubdomainResult>) {
     let main_result = run_http_scan(target).await;
 
     let subdomain_results = if include_subdomains {

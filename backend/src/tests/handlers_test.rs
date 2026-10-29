@@ -11,18 +11,15 @@ mod tests {
     use actix_web::http::StatusCode;
     use actix_web::{test, web, App};
     use chrono::Utc;
-    use serde_json::json;
     use std::sync::{Arc, Mutex};
     use uuid::Uuid;
 
     async fn setup_app() -> (
         AppState,
-        impl actix_web::dev::ServiceFactory<
-            actix_web::dev::ServiceRequest,
-            Config = (),
-            Response = actix_web::dev::ServiceResponse,
+        impl actix_web::dev::Service<
+            actix_http::Request,
+            Response = actix_web::dev::ServiceResponse<actix_web::body::BoxBody>,
             Error = actix_web::Error,
-            InitError = (),
         >,
     ) {
         let state = AppState {
@@ -110,7 +107,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_list_scans_after_create() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan first
         let req = test::TestRequest::post()
@@ -139,7 +136,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_get_scan_status_existing() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan
         let req = test::TestRequest::post()
@@ -227,7 +224,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_update_scan_progress() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan
         let req = test::TestRequest::post()
@@ -283,7 +280,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_update_scan_completed_with_results() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan
         let req = test::TestRequest::post()
@@ -343,7 +340,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_update_scan_failed() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan
         let req = test::TestRequest::post()
@@ -380,7 +377,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_multiple_scans_isolation() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create first scan
         let req1 = test::TestRequest::post()
@@ -563,7 +560,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_update_scan_progress_out_of_bounds_high() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan
         let req = test::TestRequest::post()
@@ -598,7 +595,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_update_scan_progress_out_of_bounds_negative() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan
         let req = test::TestRequest::post()
@@ -631,7 +628,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_list_scans_after_multiple_creates() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create multiple scans
         let urls = vec!["https://first.com", "https://second.com", "https://third.com"];
@@ -667,29 +664,21 @@ mod tests {
 
     #[actix_web::test]
     async fn test_concurrent_scan_creation() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Simulate concurrent creation by creating multiple scans rapidly
-        let mut handles = Vec::new();
-        for i in 0..10 {
-            let app_clone = app.clone();
-            handles.push(tokio::spawn(async move {
-                let req = test::TestRequest::post()
-                    .uri("/api/scans")
-                    .set_json(&CreateScanRequest {
-                        url: format!("https://example{}.com", i),
-                        options: None,
-                    })
-                    .to_request();
-                let resp = test::call_service(&app_clone, req).await;
-                let body: serde_json::Value = test::read_body_json(resp).await;
-                body["scanId"].as_str().unwrap().to_string()
-            }));
-        }
-
         let mut scan_ids = Vec::new();
-        for handle in handles {
-            scan_ids.push(handle.await.unwrap());
+        for i in 0..10 {
+            let req = test::TestRequest::post()
+                .uri("/api/scans")
+                .set_json(&CreateScanRequest {
+                    url: format!("https://example{}.com", i),
+                    options: None,
+                })
+                .to_request();
+            let resp = test::call_service(&app, req).await;
+            let body: serde_json::Value = test::read_body_json(resp).await;
+            scan_ids.push(body["scanId"].as_str().unwrap().to_string());
         }
 
         // All should have unique IDs

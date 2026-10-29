@@ -2,24 +2,21 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::handlers::scan_handlers::{create_scan, get_scan_results, get_scan_status, health_check, list_scans, update_scan_progress, AppState, ScanStatus};
-    use crate::models::{CreateScanRequest, JobUpdate, ScanOptions, ScanResult, SeverityLevel, Vulnerability};
+    use crate::handlers::scan_handlers::{create_scan, get_scan_results, get_scan_status, health_check, list_scans, update_scan_progress, AppState};
+    use crate::models::{CreateScanRequest, JobUpdate, ScanOptions, ScanResult, ScanStatus, SeverityLevel, Vulnerability};
     use actix_web::http::StatusCode;
     use actix_web::{test, web, App};
     use chrono::Utc;
     use mockito::Server;
-    use serde_json::json;
     use std::sync::{Arc, Mutex};
     use uuid::Uuid;
 
     async fn setup_app() -> (
         AppState,
-        impl actix_web::dev::ServiceFactory<
-            actix_web::dev::ServiceRequest,
-            Config = (),
-            Response = actix_web::dev::ServiceResponse,
+        impl actix_web::dev::Service<
+            actix_http::Request,
+            Response = actix_web::dev::ServiceResponse<actix_web::body::BoxBody>,
             Error = actix_web::Error,
-            InitError = (),
         >,
     ) {
         let state = AppState {
@@ -41,7 +38,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_full_scan_flow_create_to_completed() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Step 1: Create a scan
         let req = test::TestRequest::post()
@@ -155,7 +152,7 @@ mod tests {
             .create_async()
             .await;
 
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan pointing to our mock server
         let target_url = format!("{}/", mock_server.url());
@@ -204,7 +201,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_scan_flow_failed_status() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create a scan
         let req = test::TestRequest::post()
@@ -248,7 +245,7 @@ mod tests {
 
     #[actix_web::test]
     async fn test_multiple_scans_progress_independently() {
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create two scans
         let req1 = test::TestRequest::post()
@@ -344,23 +341,22 @@ mod tests {
     #[actix_web::test]
     async fn test_scan_worker_simulation() {
         // This test simulates the background worker behavior
-        let (state, app) = setup_app().await;
+        let (_, app) = setup_app().await;
 
         // Create multiple scans
-        let scan_ids: Vec<String> = (0..3)
-            .map(|i| {
-                let req = test::TestRequest::post()
-                    .uri("/api/scans")
-                    .set_json(&CreateScanRequest {
-                        url: format!("https://site{}.com", i),
-                        options: None,
-                    })
-                    .to_request();
-                let resp = test::call_service(&app, req).await;
-                let body: serde_json::Value = test::read_body_json(resp).await;
-                body["scanId"].as_str().unwrap().to_string()
-            })
-            .collect();
+        let mut scan_ids: Vec<String> = Vec::new();
+        for i in 0..3 {
+            let req = test::TestRequest::post()
+                .uri("/api/scans")
+                .set_json(&CreateScanRequest {
+                    url: format!("https://site{}.com", i),
+                    options: None,
+                })
+                .to_request();
+            let resp = test::call_service(&app, req).await;
+            let body: serde_json::Value = test::read_body_json(resp).await;
+            scan_ids.push(body["scanId"].as_str().unwrap().to_string());
+        }
 
         // Verify all are queued
         for scan_id in &scan_ids {

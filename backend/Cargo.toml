@@ -7,10 +7,13 @@ license = "MIT"
 
 [dependencies]
 # Async runtime
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "signal", "net"] }
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros", "sync", "time", "signal", "net"] }
+tokio-test = "0.4"
 
 # Web framework - Fixed RUSTSEC-2026-0258 via h2 upgrade, RUSTSEC-2024-0436 via actix-web upgrade
-# Using rustls-0_23 feature to pull secure rustls >=0.23.46 (fixes RUSTSEC-2024-0336, RUSTSEC-2026-0349)
+# rustls-0_23 feature pins secure rustls >=0.23.46 (fixes RUSTSEC-2024-0336, RUSTSEC-2026-0349).
+# Force the `ring` provider: builds in pure Rust (no aws-lc-sys C compile / no OpenSSL libpthread
+# linkage), avoiding the pthread_rwlock_t build failure on this toolchain.
 actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-0_23"] }
 actix-cors = "0.7"
 
@@ -44,8 +47,9 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
 actix-rt = "2"
+actix-http = "3"
 actix-web = { version = "4.10", default-features = false, features = ["macros", "compress-brotli", "compress-gzip", "compress-zstd", "cookies", "unicode", "compat", "ws", "rustls-0_23"] }
-tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "net", "signal"] }
+tokio = { version = "1.54.1", features = ["rt-multi-thread", "macros", "time", "sync", "net", "signal"] }
 uuid = { version = "0.8", features = ["v4", "serde"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 serde_json = "1"

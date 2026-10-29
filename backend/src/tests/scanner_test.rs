@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::models::{SeverityLevel, Vulnerability};
+    use crate::models::{SeverityLevel, SubdomainResult};
     use crate::services::scanner::{analyze_response_body, extract_host, COMMON_SUBDOMAINS};
 
     #[test]
@@ -264,7 +264,7 @@ mod tests {
     #[test]
     fn test_common_subdomains_unique() {
         let mut seen = std::collections::HashSet::new();
-        for sub in *COMMON_SUBDOMAINS {
+        for sub in &*COMMON_SUBDOMAINS {
             assert!(seen.insert(*sub), "Duplicate subdomain: {}", sub);
         }
     }
