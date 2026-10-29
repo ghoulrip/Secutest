@@ -1,5 +1,4 @@
-/// API handlers for the Secutest backend
-
+//! API handlers for the Secutest backend
 pub mod scan_handlers {
     use crate::models::*;
     use crate::services::scanner::run_http_scan;
@@ -37,10 +36,10 @@ pub mod scan_handlers {
                         "description": v.description,
                         "location": v.affected_url,
                         "impact": match v.severity {
-                            crate::models::SeverityLevel::Critical => "Critical security risk",
-                            crate::models::SeverityLevel::High => "High security risk",
-                            crate::models::SeverityLevel::Medium => "Medium security risk",
-                            crate::models::SeverityLevel::Low => "Low security risk",
+                            SeverityLevel::Critical => "Critical security risk",
+                            SeverityLevel::High => "High security risk",
+                            SeverityLevel::Medium => "Medium security risk",
+                            SeverityLevel::Low => "Low security risk",
                         },
                         "evidence": [],
                         "solution": {
@@ -88,7 +87,7 @@ pub mod scan_handlers {
             "scanId": job.id,
             "url": job.target,
             "status": status,
-            "progress": (job.progress * 100.0) as u32,
+            "progress": (job.progress * 100.0) as i32,
             "startedAt": job.created_at,
             "completedAt": completed_at,
             "error": error,
@@ -188,7 +187,7 @@ pub mod scan_handlers {
                 job.progress = progress;
             }
             if let Some(ref status) = update.status {
-                job.status = status.clone();
+                job.status = *status;
             }
             if let Some(ref result) = update.result {
                 job.result = Some(result.clone());
