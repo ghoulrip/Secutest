@@ -451,7 +451,7 @@ mod tests {
         let (_, app) = setup_app().await;
         let req = test::TestRequest::post()
             .uri("/api/scans")
-            .set_json(&serde_json::json!({}))  // missing url
+            .set_json(serde_json::json!({})) // missing url
             .to_request();
         let resp = test::call_service(&app, req).await;
 
@@ -579,7 +579,7 @@ mod tests {
             .uri(&format!("/api/scans/{}/progress", scan_id))
             .set_json(&JobUpdate {
                 job_id: scan_id.clone(),
-                progress: Some(1.5),  // > 1.0
+                progress: Some(1.5), // > 1.0
                 status: None,
                 result: None,
             })
@@ -631,7 +631,11 @@ mod tests {
         let (_, app) = setup_app().await;
 
         // Create multiple scans
-        let urls = vec!["https://first.com", "https://second.com", "https://third.com"];
+        let urls = vec![
+            "https://first.com",
+            "https://second.com",
+            "https://third.com",
+        ];
         let mut scan_ids = Vec::new();
 
         for url in urls {
@@ -656,7 +660,10 @@ mod tests {
         assert_eq!(body.len(), 3);
 
         // Verify all scan IDs are present
-        let returned_ids: Vec<String> = body.iter().map(|b| b["scanId"].as_str().unwrap().to_string()).collect();
+        let returned_ids: Vec<String> = body
+            .iter()
+            .map(|b| b["scanId"].as_str().unwrap().to_string())
+            .collect();
         for id in scan_ids {
             assert!(returned_ids.contains(&id));
         }

@@ -75,8 +75,8 @@ mod tests {
         // RTL override characters
         let body_rtl = "<html>&#x202E;malicious</html>";
         let vulns = analyze_response_body(body_rtl, "http://example.com");
-        // Should not crash, may or may not detect depending on patterns
-        assert!(vulns.is_empty() || vulns.len() > 0);
+        // Should not crash; the analyzer either finds vulns or returns empty
+        assert!(!vulns.is_empty());
     }
 
     #[test]
@@ -105,7 +105,7 @@ mod tests {
         let body = "test\x00<script>alert(1)</script>";
         let vulns = analyze_response_body(body, "http://example.com");
         // Should handle null bytes gracefully
-        assert!(vulns.is_empty() || vulns.len() > 0);
+        assert!(!vulns.is_empty());
     }
 
     #[test]
@@ -264,7 +264,7 @@ mod tests {
     #[test]
     fn test_common_subdomains_unique() {
         let mut seen = std::collections::HashSet::new();
-        for sub in &*COMMON_SUBDOMAINS {
+        for sub in COMMON_SUBDOMAINS {
             assert!(seen.insert(*sub), "Duplicate subdomain: {}", sub);
         }
     }
