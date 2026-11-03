@@ -144,6 +144,33 @@ jobs:
         run: cargo clippy --manifest-path backend/Cargo.toml -- -D warnings
         working-directory: backend
 
+  backend-coverage:
+    runs-on: ubuntu-latest
+    needs: [backend-build, backend-test]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+      - name: Add llvm-tools-preview (for cargo --coverage)
+        run: rustup component add llvm-tools-preview
+      - name: Cache Cargo registry and target
+        uses: actions/cache@v4
+        with:
+          path: |
+            backend/target
+            ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-${{ hashFiles('backend/Cargo.lock') }}
+      - name: Run coverage and record execution time
+        run: |
+          start=$(date +%s.%N)
+          cargo test --manifest-path backend/Cargo.toml --coverage --output-format json
+          end=$(date +%s.%N)
+          echo "backend_coverage_seconds=$(( end - start ))" >> "$GITHUB_OUTPUT"
+          echo "Backend coverage completed in $(( end - start ))s"
+        working-directory: backend
+
   backend-security:
     runs-on: ubuntu-latest
     needs: backend-build
@@ -160,7 +187,7 @@ jobs:
 
   # ---------- Build artifacts ----------
   docker-build:
-    needs: [frontend-test, frontend-lint, frontend-coverage, backend-build, frontend-security, backend-security]
+    needs: [frontend-test, frontend-lint, frontend-coverage, backend-build, backend-coverage, frontend-security, backend-security]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
