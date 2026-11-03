@@ -2,8 +2,14 @@
 
 #[cfg(test)]
 mod tests {
-    use crate::handlers::scan_handlers::{create_scan, get_scan_results, get_scan_status, health_check, list_scans, update_scan_progress, AppState};
-    use crate::models::{CreateScanRequest, JobUpdate, ScanOptions, ScanResult, ScanStatus, SeverityLevel, Vulnerability};
+    use crate::handlers::scan_handlers::{
+        create_scan, get_scan_results, get_scan_status, health_check, list_scans,
+        update_scan_progress, AppState,
+    };
+    use crate::models::{
+        CreateScanRequest, JobUpdate, ScanOptions, ScanResult, ScanStatus, SeverityLevel,
+        Vulnerability,
+    };
     use actix_web::http::StatusCode;
     use actix_web::{test, web, App};
     use chrono::Utc;

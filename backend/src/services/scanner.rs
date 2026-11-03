@@ -69,11 +69,9 @@ pub(crate) fn analyze_response_body(body: &str, target: &str) -> Vec<Vulnerabili
     // evasion technique (they let attacker-controlled text visually override surrounding
     // content). Flag both the actual U+202A..U+202E codepoints and their raw HTML-entity
     // reference form (e.g. "&#x202E;").
-    let has_bidi = [
-        '\u{202A}', '\u{202B}', '\u{202C}', '\u{202D}', '\u{202E}',
-    ]
-    .iter()
-    .any(|c| body.contains(*c))
+    let has_bidi = ['\u{202A}', '\u{202B}', '\u{202C}', '\u{202D}', '\u{202E}']
+        .iter()
+        .any(|c| body.contains(*c))
         || body_lower.contains("&#x202")
         || body_lower.contains("&#823");
 
