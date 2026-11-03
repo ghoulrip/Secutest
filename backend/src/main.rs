@@ -25,7 +25,12 @@ async fn main() -> std::io::Result<()> {
         )
         .init();
 
-    info!("Starting Secutest Backend on http://localhost:8080");
+    let port: u16 = std::env::var("PORT")
+        .ok()
+        .and_then(|p| p.trim().parse().ok())
+        .unwrap_or(8080);
+
+    info!("Starting Secutest Backend on http://0.0.0.0:{port}");
 
     // Initialize shared state
     let state = web::Data::new(AppState {
@@ -49,7 +54,7 @@ async fn main() -> std::io::Result<()> {
             .service(update_scan_progress)
             .wrap(Cors::permissive())
     })
-    .bind("localhost:8080")?
+    .bind(format!("0.0.0.0:{port}"))?
     .run()
     .await
 }

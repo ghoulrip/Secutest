@@ -51,12 +51,12 @@ ENV NODE_ENV=production
 
 # Start both services
 CMD sh -c '
-  # Start the backend
-  ./secutest-backend &
+  # Bind the backend to every interface on the configured port
+  PORT="${PORT:-8080}" ./secutest-backend &
 
   # Wait a moment for backend to start
   sleep 2
 
-  # Start the frontend dev server in background (or serve static)
-  npx vite --host --port 5173
+  # Serve the production static build in place (no dev server)
+  npx vite preview --host --port 5173 --outDir dist
 '

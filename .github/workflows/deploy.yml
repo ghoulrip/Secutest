@@ -17,7 +17,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: ${{ github.event_name == 'workflow_dispatch' && github.events.inputs.environment || 'production' }}
+    environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'production' }}
     defaults:
       run:
         working-directory: .
@@ -46,7 +46,7 @@ jobs:
         run: |
           echo "Deploying ${{ secrets.DOCKERHUB_USERNAME }}/secutest:${{ github.sha }} to ${{ env.DEPLOY_TARGET }}"
         env:
-          DEPLOY_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.events.inputs.environment || 'production' }}
+          DEPLOY_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'production' }}
 
       - name: Post deployment verification
         run: |

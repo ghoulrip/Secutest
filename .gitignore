@@ -15,3 +15,10 @@ frontend/coverage/
 # Agent / Paperclip runtime artifacts
 .claude/
 heartbeat-context.json
+
+# Build / logs / node artifacts (local dev only)
+logs/
+node_modules/
+backend/node_modules/
+backend/package.json
+backend/package-lock.json

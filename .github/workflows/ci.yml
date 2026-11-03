@@ -35,6 +35,31 @@ jobs:
           echo "frontend_test_seconds=$(( end - start ))" >> "$GITHUB_OUTPUT"
           echo "Frontend tests completed in $(( end - start ))s"
 
+  frontend-coverage:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    needs: frontend-test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Run coverage and record execution time
+        env:
+          CI: true
+        run: |
+          start=$(date +%s.%N)
+          npm run test:coverage
+          end=$(date +%s.%N)
+          echo "frontend_coverage_seconds=$(( end - start ))" >> "$GITHUB_OUTPUT"
+          echo "Frontend coverage completed in $(( end - start ))s"
+
   frontend-lint:
     runs-on: ubuntu-latest
     defaults:
@@ -104,10 +129,17 @@ jobs:
             backend/target
             ~/.cargo/registry
           key: ${{ runner.os }}-cargo-${{ hashFiles('backend/Cargo.lock') }}
-      - name: Run tests
-        run: cargo test --manifest-path backend/Cargo.toml
+      - name: Run tests and record execution time
+        run: |
+          start=$(date +%s.%N)
+          cargo test --manifest-path backend/Cargo.toml
+          end=$(date +%s.%N)
+          echo "backend_test_seconds=$(( end - start ))" >> "$GITHUB_OUTPUT"
+          echo "Backend tests completed in $(( end - start ))s"
+        working-directory: backend
       - name: Check formatting
         run: cargo fmt --manifest-path backend/Cargo.toml -- --check
+        working-directory: backend
       - name: Lint with clippy
         run: cargo clippy --manifest-path backend/Cargo.toml -- -D warnings
         working-directory: backend
@@ -128,7 +160,7 @@ jobs:
 
   # ---------- Build artifacts ----------
   docker-build:
-    needs: [frontend-test, frontend-lint, backend-build, frontend-security, backend-security]
+    needs: [frontend-test, frontend-lint, frontend-coverage, backend-build, frontend-security, backend-security]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
