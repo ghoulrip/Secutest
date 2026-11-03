@@ -1,4 +1,5 @@
 use crate::models::SubdomainResult;
+
 /// Scanner service for running HTTP scans against targets
 pub use crate::models::{ScanResult, SeverityLevel, Vulnerability};
 use reqwest::Client;
@@ -63,6 +64,20 @@ pub(crate) fn analyze_response_body(body: &str, target: &str) -> Vec<Vulnerabili
         || body_lower.contains("onfocus=")
         || body_lower.contains("onmouseover=")
         || body_lower.contains("onclick=");
+
+    // Bidirectional override characters and HTML-entity encoded overrides are a known XSS
+    // evasion technique (they let attacker-controlled text visually override surrounding
+    // content). Flag both the actual U+202A..U+202E codepoints and their raw HTML-entity
+    // reference form (e.g. "&#x202E;").
+    let has_bidi = [
+        '\u{202A}', '\u{202B}', '\u{202C}', '\u{202D}', '\u{202E}',
+    ]
+    .iter()
+    .any(|c| body.contains(*c))
+        || body_lower.contains("&#x202")
+        || body_lower.contains("&#823");
+
+    let has_xss = has_xss || has_bidi;
 
     if has_xss {
         vulnerabilities.push(Vulnerability {
