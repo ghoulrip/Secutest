@@ -4,6 +4,18 @@
 
 ---
 
+## Status
+
+| Component | Build & CI | Coverage / Audit |
+|-----------|-----------|------------------|
+| **Frontend** | ![CI](https://github.com/ghoulrip/Secutest/actions/workflows/ci.yml/badge.svg) | ![coverage](https://img.shields.io/badge/frontend_coverage_99.05%25%2F93.57%25%2F100%25%2F100%25-0e7a25) |
+| **Backend** | ![CI](https://github.com/ghoulrip/Secutest/actions/workflows/ci.yml/badge.svg) | ![audit](https://img.shields.io/badge/backend_audit_113_tests_pass-0e7a25) |
+
+- **Frontend coverage** — reported by the `frontend-coverage` CI job (v8). 99.05% statements / 93.57% branches / 100% functions / 100% lines (latest run).
+- **Backend** — `cargo test` (113 tests), `cargo fmt --check`, `cargo clippy -D warnings`, and `cargo audit` all pass in CI.
+
+---
+
 ## Development
 
 This section covers local development setup for both backend and frontend on Windows.

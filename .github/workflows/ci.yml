@@ -27,7 +27,13 @@ jobs:
           cache-dependency-path: frontend/package-lock.json
       - run: npm ci
       - run: npm run build
-      - run: npm test
+      - name: Run tests and record execution time
+        run: |
+          start=$(date +%s.%N)
+          npm test
+          end=$(date +%s.%N)
+          echo "frontend_test_seconds=$(( end - start ))" >> "$GITHUB_OUTPUT"
+          echo "Frontend tests completed in $(( end - start ))s"
 
   frontend-lint:
     runs-on: ubuntu-latest
